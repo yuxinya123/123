@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>你有101个优点</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap">
+<style>
+  :root{
+    --paper:#fbfbfc; --paper-edge:#e9e9ee;
+    --ink:#3b3a40; --ink-soft:#8d8b95;
+    --rose:#c9364f; --wx-green:#95ec69; --bubble:#ffffff;
+    --bar:rgba(255,255,255,.86);
+    --font:"ZCOOL KuaiLe","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color-scheme:light;
+  }
+  [hidden]{display:none!important}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);overflow:hidden}
+  #app{position:relative;height:100%;display:flex;flex-direction:column}
+  #view{position:relative;flex:1;overflow:hidden;
+    background:radial-gradient(120% 90% at 50% 45%,#fff 40%,var(--paper-edge) 100%)}
+  #stage{position:absolute;left:0;top:0;transform-origin:0 0;
+    transition:transform 1.1s cubic-bezier(.22,.8,.25,1)}
+  .w{position:absolute;white-space:nowrap;line-height:1;color:var(--ink);
+    animation:pop .9s cubic-bezier(.2,.8,.2,1) both}
+  .w.title{color:var(--rose);animation:none}
+  .w.title .ch{display:inline-block;animation:pop .7s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes pop{
+    0%{opacity:0;filter:blur(6px);transform:scale(1.35);color:#d6d4dc}
+    60%{opacity:1;filter:blur(0)}
+    100%{opacity:1;transform:scale(1)}
+  }
+
+
+  /* controls */
+  #bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bar);
+    border-top:1px solid var(--paper-edge);font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px}
+  button,select{font:inherit;border:1px solid #dcdae2;background:#fff;color:var(--ink);
+    border-radius:999px;padding:6px 14px;cursor:pointer}
+  button.primary{background:var(--rose);border-color:var(--rose);color:#fff}
+  button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+  #count{color:var(--ink-soft);font-variant-numeric:tabular-nums;min-width:5.5em;text-align:center}
+
+  #panel{position:absolute;inset:0;background:rgba(40,36,44,.35);display:flex;align-items:center;justify-content:center;padding-inline:16px}
+  .card{background:#fff;border-radius:14px;padding:20px;width:100%;max-width:520px;max-height:86%;overflow:auto;
+    display:flex;flex-direction:column;gap:12px;font-family:"PingFang SC","Microsoft YaHei",sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+  .card h2{margin:0;font-size:18px;font-family:var(--font);color:var(--rose);font-weight:400}
+  .card label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink-soft)}
+  .card input,.card textarea{font:inherit;font-size:15px;color:var(--ink);border:1px solid #dcdae2;border-radius:8px;padding:8px 10px}
+  .card textarea{min-height:200px;resize:vertical;line-height:1.5}
+  .card .acts{display:flex;gap:8px;justify-content:flex-end}
+  @media (prefers-reduced-motion:reduce){
+    #stage{transition:none}.w,.w.title .ch{animation-duration:.01s}
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="view">
+    <div id="stage"></div>
+    <div id="panel" hidden>
+      <form class="card" id="form">
+        <h2>改成你想说的话</h2>
+        <label for="fTitle">中间的大字<input id="fTitle"></label>
+        <label for="fList">优点，每行一个（序号会自动加上）<textarea id="fList"></textarea></label>
+        <div class="acts"><button type="button" id="cancel">取消</button><button type="submit" class="primary">保存并播放</button></div>
+      </form>
+    </div>
+  </div>
+  <div id="bar">
+    <button class="primary" id="replay">重新播放</button>
+    <span id="count">0 / 101</span>
+    <select id="speed" aria-label="播放速度">
+      <option value="1.6">慢</option><option value="1" selected>正常</option><option value="0.55">快</option>
+    </select>
+    <button id="edit">编辑文字</button>
+  </div>
+</div>
+
+<script>
+const DEFAULT = {
+  title:"你有101个优点",
+  list:`有趣 可爱 真诚 帅气 善良 聪明 勇敢 努力 机灵 伶俐 游戏厉害 有上进心 活泼 愿意倾听 愿意分享 积极 社交能力强 大方 爱护小动物 宽容 愿意反思 温柔 纯洁 尊重别人 谨慎 懂得拒绝 三观正 爱动脑筋 会穿搭 声音好听 爱笑 正直 有主见 言而有信 有礼貌 有担当 会照顾人 心思细腻 有边界感 为人慷慨 愿意尝试 认识你 负责 冷静 懂得珍惜 情绪稳定 会夸人 会给人带来快乐 好奇心强 有想象力 会说话 会给自己留后路 拍照技术好 浪漫 天真 宅 体贴 有正能量的同时也有负能量 热心肠 和你有共同话题 不虚假 说到做到 偶尔呆呆的 自信大方 会安慰人 专一 幽默 社牛 亲和力强 有使命感 有责任感 坦率 有魄力 有个性 有素质 有智慧 有特点 有气质 有独特眼光 与众不同 很沉稳 坦诚 性格好 有胆识 爱自己 用心 贴心 细心 友善 独立 可靠 有品位 有领导力 才华横溢 观察力强 有耐心 做事靠谱 有艺术细胞 逻辑清晰 气场强大 独一无二`.split(" ")
+};
+let cfg = structuredClone(DEFAULT);
+try{ const s = JSON.parse(localStorage.getItem("youdian-cfg")); if(s && Array.isArray(s.list)) cfg = s; }catch(e){}
+
+const $ = id => document.getElementById(id);
+const view=$("view"), stage=$("stage"), countEl=$("count");
+const FONT = getComputedStyle(document.documentElement).getPropertyValue("--font");
+const ctx = document.createElement("canvas").getContext("2d");
+const measure = (t,px)=>{ ctx.font = `${px}px ${FONT}`; return ctx.measureText(t).width; };
+
+let timers=[], runId=0;
+const later=(fn,ms)=>timers.push(setTimeout(fn,ms*speed()));
+const speed=()=>parseFloat($("speed").value);
+function clearTimers(){ timers.forEach(clearTimeout); timers=[]; }
+
+/* seeded random so each playback lays out the same cloud */
+function rng(seed){ return ()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+/* word-cloud layout: elliptical spiral from centre, rectangle collision */
+function layout(){
+  const R = rng(101);
+  const boxes=[];
+  const hit=(b)=>boxes.some(o=>b.x<o.x+o.w+3&&b.x+b.w+3>o.x&&b.y<o.y+o.h+2&&b.y+b.h+2>o.y);
+  const tSize=34, tw=measure(cfg.title,tSize);
+  const title={x:-tw/2,y:-tSize/2,w:tw,h:tSize*1.15,size:tSize,text:cfg.title};
+  boxes.push(title);
+  const items=cfg.list.map((t,i)=>{
+    const text=`${i+1}.${t}`;
+    let size = 11 + R()*9;
+    if(R()<.18) size = 20 + R()*6;
+    if(text.length>12) size = Math.min(size,13);
+    const w=measure(text,size), h=size*1.15;
+    const a0=R()*Math.PI*2, dir=R()<.5?1:-1;
+    let placed=null;
+    for(let s=0;s<6000;s++){
+      const a=a0+dir*s*0.11, r=4+s*0.45;
+      const b={x:Math.cos(a)*r*1.75-w/2, y:Math.sin(a)*r-h/2, w, h};
+      if(!hit(b)){ placed=b; break; }
+    }
+    placed ||= {x:(R()-.5)*900,y:(R()-.5)*500,w,h};
+    Object.assign(placed,{size,text});
+    boxes.push(placed);
+    return placed;
+  });
+  return {title,items};
+}
+
+/* camera: fit bounding box of what's visible */
+function frame(boxes, maxZoom){
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  boxes.forEach(b=>{x0=Math.min(x0,b.x);y0=Math.min(y0,b.y);x1=Math.max(x1,b.x+b.w);y1=Math.max(y1,b.y+b.h);});
+  const pad=24, vw=view.clientWidth, vh=view.clientHeight;
+  const bw=x1-x0+pad*2, bh=y1-y0+pad*2;
+  const s=Math.min(vw/bw, vh/bh, maxZoom);
+  const cx=(x0+x1)/2, cy=(y0+y1)/2;
+  stage.style.transform=`translate(${vw/2-cx*s}px,${vh/2-cy*s}px) scale(${s})`;
+}
+
+let L=null, shown=[];
+function addWord(b){
+  const el=document.createElement("span");
+  el.className="w"; el.textContent=b.text;
+  el.style.cssText=`left:${b.x}px;top:${b.y}px;font-size:${b.size}px`;
+  el.style.transformOrigin="50% 50%";
+  stage.appendChild(el);
+}
+
+function playCloud(){
+  const my=runId;
+  stage.innerHTML=""; shown=[]; countEl.textContent=`0 / ${L.items.length}`;
+  // title types in chunks: 你有 → 你有101个 → 你有101个优点
+  const t=L.title, el=document.createElement("span");
+  el.className="w title";
+  el.style.cssText=`left:${t.x}px;top:${t.y}px;font-size:${t.size}px`;
+  stage.appendChild(el);
+  shown.push(t); frame(shown, 3.2);
+  const chars=[...t.text], chunks=[];
+  const m=t.text.match(/^(.*?)(\d+\S?)(.*)$/);
+  if(m){ chunks.push(m[1].length, m[1].length+m[2].length, chars.length); }
+  else chunks.push(Math.ceil(chars.length/2), chars.length);
+  let done=0;
+  chunks.forEach((end,k)=>later(()=>{
+    if(my!==runId) return;
+    for(;done<end;done++){ const c=document.createElement("span"); c.className="ch"; c.textContent=chars[done]; el.appendChild(c); }
+  },k*650));
+  // traits
+  const start=chunks.length*650+200;
+  let t0=start;
+  L.items.forEach((b,i)=>{
+    const gap = i<3 ? 520 : i<12 ? 300 : 130;
+    t0 += gap;
+    later(()=>{
+      if(my!==runId) return;
+      addWord(b); shown.push(b);
+      countEl.textContent=`${i+1} / ${L.items.length}`;
+      if(i<25 || i%3===0 || i===L.items.length-1) frame(shown, 3.2);
+    }, t0);
+  });
+}
+
+function play(){
+  clearTimers(); runId++;
+  L=layout();
+  playCloud();
+}
+
+$("replay").onclick=()=>play();
+$("speed").onchange=()=>play();
+window.addEventListener("resize",()=>{ if(shown.length) frame(shown,3.2); });
+
+$("edit").onclick=()=>{
+  $("fTitle").value=cfg.title;
+  $("fList").value=cfg.list.join("\n"); $("panel").hidden=false; $("fTitle").focus();
+};
+$("cancel").onclick=()=>$("panel").hidden=true;
+$("form").onsubmit=e=>{
+  e.preventDefault();
+  const list=$("fList").value.split(/\n+/).map(s=>s.replace(/^\s*\d+[.、．]\s*/,"").trim()).filter(Boolean);
+  cfg={title:$("fTitle").value.trim()||DEFAULT.title, list:list.length?list:DEFAULT.list};
+  try{ localStorage.setItem("youdian-cfg",JSON.stringify(cfg)); }catch(e){}
+  $("panel").hidden=true; play();
+};
+
+const allText=cfg.title+cfg.list.join("")+"0123456789.";
+Promise.race([document.fonts.load(`20px "ZCOOL KuaiLe"`,allText), new Promise(r=>setTimeout(r,2500))])
+  .catch(()=>{}).then(()=>play());
+</script>
+</body>
+</html>
